@@ -1,0 +1,9 @@
+This package is now distributed partially under the GPL
+license and partially under the LGPL license.  The library
+is LGPL'd (see LICENCE.lgpl for details); this includes
+br_cmd.c, br_cmd.h, br_cmd_engine.c, br_cmd_engine.h,
+br_translate.h.
+
+The br program itself is distributed under the GPL license
+(see LICENSE.gpl for details); this is a change from 0.04
+and previous versions.  This covers br.c and br.h.

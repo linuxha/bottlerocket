@@ -1,0 +1,51 @@
+INSTALLING BottleRocket:
+-----------------------
+
+./configure
+make
+make install
+
+Note: The Makefile assumes that your make program
+is GNU gmake; if this is not the case, you will need
+to hand-edit the Makefile for your platform after
+running configure.  If you need help, email me
+(my email address is in the README file).
+
+That's it!  Note that BottleRocket requires access to
+the serial port that your FireCracker is plugged into,
+so you need to be root to use it, or set it up setgid
+(generally group "tty" under Linux, "dialers" under
+FreeBSD, check with someone you trust if you're not
+sure how to set this up) for other users to use it (this
+is definitely recommended over making it setuid).
+It's always a good idea to look over code that you're 
+going to be running with elevated privileges (do that
+now!) to make sure you're comfortable with it having
+higher privileges.  Also be aware that just making it
+setgid (or uid), executable by anyone, means that 
+*anyone* on your system can use it to turn thing on/
+off, and IT IS POSSIBLE TO CAUSE A MODEM PLUGGED IN
+THROUGH THE DYNAMITE MODULE TO LOSE CARRIER.  If the
+process is killed at the right time, DTR and/or RTS
+will be set low and can remain that way.  There is
+no way to stop a user from sending a SIGKILL to a
+process that they have run, even if it's setuid/gid, on
+at least most operating systems that I'm familiar
+with.  YOU HAVE BEEN WARNED.
+
+You can now specify the serial port (or a link to a
+serial port) from configure; use
+
+./configure --with-x10port=<device>
+
+to do this.  Use
+
+./configure --help
+
+to get a full list of options you can pass to configure.
+
+I recommend using --with-x10port=/dev/firecracker and
+adding a symbolic link from /dev/firecracker to whatever
+device your firecracker is plugged into; this makes it
+easy to move the firecracker to another port if you
+so choose.

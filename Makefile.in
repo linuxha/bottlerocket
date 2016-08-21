@@ -1,0 +1,76 @@
+#
+# Makefile for BottleRocket (controller for X10 FireCracker home automation
+#  kit)
+#
+
+srcdir = @srcdir@
+VPATH = @srcdir@
+top_srcdir = @top_srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+
+CFLAGS = @CFLAGS@
+
+CFLAGS += -I. -Wall  -O2 -DX10_PORTNAME=\"@X10PORT@\"
+DEFS=@DEFS@
+LIBS=@LIBS@
+INSTALL= @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+
+CC=@CC@
+
+#
+# uncomment if you want to use TX instead of DTR (necessary on some
+#   Macs and with Boca boards, etc.
+#
+
+# DEFS += -DTIOCM_FOR_0=TIOCM_ST
+
+bin: br
+
+lib: libbr.a
+
+br: br.o libbr.a
+	${CC} ${CFLAGS} ${DEFS} -o br br.o -L. -lbr
+
+br.o: ${srcdir}/br.c ${srcdir}/br_cmd.h ${srcdir}/br_cmd_engine.h
+	${CC} ${CFLAGS} ${DEFS} -c ${srcdir}/br.c
+
+libbr.a: br_cmd.o br_cmd_engine.o
+	${AR} cru libbr.a br_cmd.o br_cmd_engine.o
+	
+br_cmd.o: ${srcdir}/br_cmd.c ${srcdir}/br_cmd.h ${srcdir}/br_translate.h
+	${CC} ${CFLAGS} ${DEFS} -c ${srcdir}/br_cmd.c
+
+br_cmd_engine.o: ${srcdir}/br_cmd_engine.c ${srcdir}/br_cmd_engine.h
+	${CC} ${CFLAGS} ${DEFS} -c ${srcdir}/br_cmd_engine.c
+
+install: br
+	${INSTALL} -d -m 755 ${bindir}
+	${INSTALL} -m 555 br ${bindir}
+
+lib_install: libbr.a br_cmd.h br_cmd_engine.h
+	${INSTALL} -d -m 755 ${libdir}
+	${INSTALL} -d -m 744 ${includedir}
+	${INSTALL} -m 644 libbr.a ${libdir}
+	${INSTALL} -m 644 br_cmd.h ${includedir}
+	${INSTALL} -m 644 br_cmd_engine.h ${includedir}
+
+clean:
+	-rm -f *.o *.a br core
+
+really_clean: clean
+	-rm -f config.h config.cache config.status config.log Makefile *.bak

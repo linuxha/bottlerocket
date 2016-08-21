@@ -1,0 +1,26 @@
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/*
+ * Do we have getopt_long() ?
+ */
+#undef HAVE_GETOPT_LONG
+
+/*
+ * How about issetugid() ?
+ */
+#undef HAVE_ISSETUGID
+
+/*
+ * Do we want debugging?
+ */
+#undef DEBUG
+
+/* Define if you have the <errno.h> header file.  */
+#undef HAVE_ERRNO_H
+
+/* Define if you have the <features.h> header file.  */
+#undef HAVE_FEATURES_H
+
+/* Define if you have the <sys/termios.h> header file. */
+#undef HAVE_SYS_TERMIOS_H
+

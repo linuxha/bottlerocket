@@ -1,0 +1,70 @@
+dnl
+dnl Autoconf script for bottlerocket
+dnl
+
+dnl make sure we have our files around.
+
+AC_INIT(br_cmd.h)
+AC_CONFIG_HEADER(config.h)
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_INSTALL
+
+dnl Define the function that peeks for getopt_long
+
+AC_DEFUN(BR_CHECK_GETOPT_LONG,
+[
+AC_EGREP_HEADER(getopt_long, getopt.h, AC_DEFINE(HAVE_GETOPT_LONG))
+])
+
+AC_DEFUN(BR_CHECK_ISSETUGID,
+[
+AC_EGREP_HEADER(issetugid, unistd.h, AC_DEFINE(HAVE_ISSETUGID))
+])
+
+dnl
+dnl Check for some headers
+dnl
+AC_CHECK_HEADERS(features.h errno.h sys/termios.h)
+
+
+dnl
+dnl Some other custom arguments
+dnl
+AC_ARG_ENABLE(debug, [  --enable-debug          Enable debugging code], AC_DEFINE(DEBUG))
+
+dnl
+dnl And find the port to use.
+dnl
+AC_DEFUN(BR_FIND_PORT,
+[AC_ARG_WITH(x10port, [  --with-x10port=PATH     Specify the serial port for the x10 module],
+[
+case "$withval" in
+	*) X10PORT="$withval" ;;
+esac],
+[
+X10PORT="auto"
+])
+
+if test "$X10PORT" = "auto"
+then
+  echo "guessing x10 port"
+  for port in /dev/ttyS0 /dev/cua0 /dev/cuaa0 /dev/tty00 /dev/ttya
+  do
+    if test -c $port
+    then
+      X10PORT=$port;
+      break
+    fi
+  done
+fi
+echo "using $X10PORT for x10 port"
+])
+
+dnl Check for important programs, like the C compiler.
+
+BR_FIND_PORT
+BR_CHECK_GETOPT_LONG
+BR_CHECK_ISSETUGID
+AC_SUBST(X10PORT)
+AC_OUTPUT(Makefile)
